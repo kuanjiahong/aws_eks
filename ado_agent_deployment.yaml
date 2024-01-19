@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ado-agents
+  namespace: azure-pipeline-agents
+  labels:
+    app: ado-agents
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ado-agents
+  template:
+    metadata:
+      name: ado-agents
+      labels:
+        app: ado-agents
+    spec:
+      containers:
+        - name: ado-agents-container
+          image: {AWS_ACCOUND_ID}.dkr.ecr.us-east-2.amazonaws.com/azure-pipeline-agent:v1
+          imagePullPolicy: Always
+          env:
+            - name: AZP_URL
+              value: https://dev.azure.com/{ORGANIZATION_NAME}
+            - name: AZP_TOKEN
+              value: {PAT_TOKEN}
+            - name: AZP_AGENT_NAME
+              value: azure-docker-agent
+            - name: AZP_POOL
+              value: eks_hosted
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+      imagePullSecrets:
+          - name: regcred

@@ -1,0 +1,10 @@
+kubectl create namespace azure-pipeline-agents
+
+kubectl create secret docker-registry regcred \
+  --docker-server=123456789012.dkr.ecr.us-east-2.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password) \
+  --namespace=azure-pipeline-agents
+
+
+kubectl delete pod kaniko
